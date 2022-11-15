@@ -2,7 +2,7 @@
 
 **Author**: Gordon P Reilley Jr
 
-**Version**: 1.0.0
+**Version**: 2.0.0
 
 ## Overview
 <!-- Provide a high level overview of what this application is and why you are building it, beyond the fact that it's an assignment for this class. (i.e. What's your problem domain?) -->
@@ -25,7 +25,7 @@ Libraries used: Node.JS, React.JS, Bootstrap
 
 01-01-2001 4:59pm - Application now has a fully-functional express server, with a GET route for the location resource. -->
 
-1. Feature 1: Set-up Project and ReadMe/ Deploy to Netlify
+1. Feature 1: Set-up Project and ReadMe / Deploy to Netlify
 
     - Estimate of time needed to complete: 45 min
 
@@ -36,6 +36,17 @@ Libraries used: Node.JS, React.JS, Bootstrap
     - Actual time needed to complete: 1 hr
 
     - Brief description of changes implemented: Updated ReadMe for GitHub and Deployed live website with Netlify.
+2. Feature 2: Adding a Form and Button
+
+    - Estimate of time needed to complete: 3 hr
+
+    - Start time: 6:45 P.M. EST
+
+    - Finish time: 10:10 P.M. EST
+
+    - Actual time needed to complete: 3 hr 25 min
+
+    - Brief description of changes implemented: Added a Form that allows users to type in a desired city and return the city name, latitude, and longitude when the hit the Explore button.
 
 ## Credit and Collaborations
 
@@ -44,3 +55,5 @@ Libraries used: Node.JS, React.JS, Bootstrap
 ### Links
 
 - <https://create-react-app.dev/docs/getting-started>
+- <https://www.npmjs.com/package/axios>
+- <https://locationiq.com/docs#search-forward-geocoding>
