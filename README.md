@@ -12,6 +12,7 @@
 ## Getting Started
 <!-- What are the steps that a user must take in order to build this app on their own machine and get it running? -->
 ![WWRC Diagram](./src/img/WRRC-Lab06.png "WRRC Diagram")
+![WWRC Diagram](./src/img/WRRC-Lab07.png "WRRC Diagram")
 
 ## Architecture
 <!-- Provide a detailed description of the application design. What technologies (languages, libraries, etc) you're using, and any other relevant design information. -->
