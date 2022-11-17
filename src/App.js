@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
+import Weather from './components/weather';
 import './App.css'
 
 class App extends React.Component {
@@ -12,7 +13,20 @@ class App extends React.Component {
       city: '',
       errorMsg: '',
       isError: false,
+      forecastData: [],
     }
+  }
+
+  handleCity = async () => {
+    
+    let url = `${process.env.REACT_APP_SERVER}/weather?city_name=${this.state.city}&lat=${this.state.cityData.lat}&lon=${this.state.cityData.lon}`;
+    
+    let cityForecast = await axios.get(url);
+    console.log(cityForecast);
+
+    this.setState({
+      forecastData: cityForecast.data
+    })
   }
 
   handleSubmitInput = (e) => {
@@ -29,6 +43,8 @@ class App extends React.Component {
       let cityInfo = await axios.get(`https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`);
 
       console.log(cityInfo.data[0].lat);
+
+      this.handleCity();
 
       this.setState({
         cityData: cityInfo.data[0],
@@ -54,9 +70,10 @@ class App extends React.Component {
           src={mapURL}
           alt={this.state.city.name + 'map'}
         />
-        <li>{this.state.cityData.display_name}</li>
-        <li>{this.state.cityData.lat}</li>
-        <li>{this.state.cityData.lon}</li>
+        <li>City: {this.state.cityData.display_name}</li>
+        <li>Latitude: {this.state.cityData.lat}</li>
+        <li>Longitude: {this.state.cityData.lon}</li>
+        <Weather weatherForecasts={this.state.forecastData}/>
         </>
       )
 
