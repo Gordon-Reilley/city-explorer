@@ -10,6 +10,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       cityData: {},
+      lat: '',
+      lon: '',
       city: '',
       errorMsg: '',
       isError: false,
@@ -17,9 +19,9 @@ class App extends React.Component {
     }
   }
 
-  handleCity = async () => {
+  handleCity = async (lat, lon) => {
     
-    let url = `${process.env.REACT_APP_SERVER}/weather?city_name=${this.state.city}&lat=${this.state.cityData.lat}&lon=${this.state.cityData.lon}`;
+    let url = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}`;
     
     let cityForecast = await axios.get(url);
     console.log(cityForecast);
@@ -28,6 +30,8 @@ class App extends React.Component {
       forecastData: cityForecast.data
     })
   }
+
+  
 
   handleSubmitInput = (e) => {
     this.setState({
@@ -44,11 +48,14 @@ class App extends React.Component {
 
       console.log(cityInfo.data[0].lat);
 
-      this.handleCity();
-
       this.setState({
         cityData: cityInfo.data[0],
+        lat: cityInfo.data[0].lat,
+        lon: cityInfo.data[0].lon
       });
+      
+      this.handleCity(cityInfo.data[0].lat, cityInfo.data[0].lon);
+
     } catch (error) {
       this.setState({
         errorMsg: error.message,
@@ -76,6 +83,7 @@ class App extends React.Component {
         <Weather weatherForecasts={this.state.forecastData}/>
         </>
       )
+      
 
     return (
       <>
