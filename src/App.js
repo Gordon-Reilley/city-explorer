@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
-import Weather from './components/weather';
+import Weather from './components/Weather';
+import Movie from './components/Movie';
 import './App.css'
 
 class App extends React.Component {
@@ -16,7 +17,20 @@ class App extends React.Component {
       errorMsg: '',
       isError: false,
       forecastData: [],
+      movieList: []
     }
+  }
+
+  handleMovie = async (city) => {
+    
+    let url = `${process.env.REACT_APP_SERVER}/movie?search=${city}`;
+    
+    let movieData = await axios.get(url);
+    console.log(movieData);
+
+    this.setState({
+      movieList: movieData.data
+    })
   }
 
   handleCity = async (lat, lon) => {
@@ -56,6 +70,8 @@ class App extends React.Component {
       
       this.handleCity(cityInfo.data[0].lat, cityInfo.data[0].lon);
 
+      this.handleMovie(this.state.city);
+
     } catch (error) {
       this.setState({
         errorMsg: error.message,
@@ -81,6 +97,7 @@ class App extends React.Component {
         <li>Latitude: {this.state.cityData.lat}</li>
         <li>Longitude: {this.state.cityData.lon}</li>
         <Weather weatherForecasts={this.state.forecastData}/>
+        <Movie movieSuggestions={this.state.movieList}/>
         </>
       )
       
