@@ -6,11 +6,11 @@ class Weather extends React.Component {
       <>
         <h3>3 Day Weather Forecast:</h3>
 
-        {this.props.weatherForecasts.map((day) => 
-          <>
+        {this.props.weatherForecasts.map((day, idx) => 
+          <div key={`movie-${idx}`}>
           <p>date: {day.date}</p>
           <p>description: {day.description}</p>
-          </>
+          </div>
         )}
       </>
     )
