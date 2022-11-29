@@ -1,22 +1,32 @@
 import React from 'react';
+import Movies from './Movies.js';
+
 
 class Movie extends React.Component {
-  render() {
-    return(
-      <>
-        <h3>Movies:</h3>
 
-        {this.props.movieSuggestions.map((movie, idx) => 
-          <div key={`movie-${idx}`}>
-            <p>Movie title: {movie.title}</p>
-            <p>Movie release date: {movie.releaseDate}</p>
-            <p>Movie overview: {movie.overview}</p>
-            <img src={movie.posterImg} alt={movie.title} title={movie.title}></img>
-          </div>
-        )}
-      </>
-    )
-  }
-}
+  render() {
+
+    return(
+      <div id="movies">
+        <section id="moiveSection">
+          <h3>Top Movies Featuring {this.props.city}</h3>
+            <div id='movieRecommendations'>
+              {this.props.movies.map((movie, idx) => (
+                <Movies
+                  title={movie.title}
+                  poster={movie.imgPath}
+                  overview={movie.overview}
+                  rating={movie.averageRating}
+                  review={movie.totalReviews}
+                  releaseDate={movie.releaseDate}
+                  key={idx}/>
+                ))
+              }
+            </div>
+        </section>
+      </div>
+    );
+  };
+};
 
 export default Movie;

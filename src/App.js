@@ -1,129 +1,135 @@
 import React from 'react';
+import Location from './components/Location.js';
+import Weather from './components/Weather.js';
+import Movie from './components/Movie.js';
+import Map from './components/Map';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button'
-import Alert from 'react-bootstrap/Alert'
-import Weather from './components/Weather';
-import Movie from './components/Movie';
-import './App.css'
+import './App.css';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cityData: {},
+      apiData: '',
+      searchCity: '',
+      display_name: '',
       lat: '',
       lon: '',
-      city: '',
-      errorMsg: '',
+      zoom: 12,
       isError: false,
-      forecastData: [],
-      movieList: []
+      errorMessage: '',
+      weatherData: '',
+      movieData: ''
     }
-  }
-
-  handleMovie = async (city) => {
-    
-    let url = `${process.env.REACT_APP_SERVER}/movie?search=${city}`;
-    
-    let movieData = await axios.get(url);
-    console.log(movieData);
-
-    this.setState({
-      movieList: movieData.data
-    })
-  }
-
-  handleCity = async (lat, lon) => {
-    
-    let url = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}`;
-    
-    let cityForecast = await axios.get(url);
-    console.log(cityForecast);
-
-    this.setState({
-      forecastData: cityForecast.data
-    })
-  }
-
-  
-
-  handleSubmitInput = (e) => {
-    this.setState({
-      city: e.target.value
-    });
   }
 
   handleSubmit = async (e) => {
-    try{
+    try {
       e.preventDefault();
-      console.log(this.state.city);
-
-      let cityInfo = await axios.get(`https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`);
-
-      console.log(cityInfo.data[0].lat);
-
-      this.setState({
-        cityData: cityInfo.data[0],
-        lat: cityInfo.data[0].lat,
-        lon: cityInfo.data[0].lon
-      });
+      console.log(`search: ${this.state.searchCity}`);
       
-      this.handleCity(cityInfo.data[0].lat, cityInfo.data[0].lon);
+      // API data
+      let key = process.env.REACT_APP_LOCATIONIQ_API_KEY;
+      let location = `https://us1.locationiq.com/v1/search?key=${key}&q=${this.state.searchCity}&format=json`;
+      
+      let locationData = await axios.get(location);
 
-      this.handleMovie(this.state.city);
+      //save data to state
+      console.log('location data:', locationData.data[0]);
+      this.setState({
+        apiData: locationData.data[0],
+        display_name: locationData.data[0].display_name,
+        lat: locationData.data[0].lat,
+        lon: locationData.data[0].lon,
+        isError: false
+      },this.handleAPI);
 
     } catch (error) {
       this.setState({
-        errorMsg: error.message,
-        isError: true,
+        errorMessage: error.message,
+        isError: true
       });
     }
   }
 
-   
-  
-  render() {
-
-    let mapURL = `https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=13`;
-
-    let differentCity = (
-        <>
-        <img 
-          className="modalMap"
-          src={mapURL}
-          alt={this.state.city.name + 'map'}
-        />
-        <li>City: {this.state.cityData.display_name}</li>
-        <li>Latitude: {this.state.cityData.lat}</li>
-        <li>Longitude: {this.state.cityData.lon}</li>
-        <Weather weatherForecasts={this.state.forecastData}/>
-        <Movie movieSuggestions={this.state.movieList}/>
-        </>
-      )
+  handleWeather = async () => {
+    try{  
+      let weatherURL = `${process.env.REACT_APP_SERVER}/weather?lat=${this.state.lat}&lon=${this.state.lon}`;
       
+      let weatherData = await axios.get(weatherURL);
+      console.log(weatherData);
+      this.setState({
+        weatherData: weatherData.data
+      });
+    } catch(error) {
+      this.setState({
+        errorMessage: error.message,
+        isError: true
+      });
+    };
+  };
 
-    return (
-      <>
-        <h1>City Explorer</h1>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Type City name
-            <input type="text" onChange={this.handleSubmitInput}/>
-          </label>
-          <Button className='exploreButton' type="submit">Explore!</Button>     
-          <ul>
-            { this.state.cityData.display_name && differentCity}
-          </ul>
-           {this.state.isError ? 
-            <Alert className="alert" variant="danger">
-            <Alert.Heading>Error!</Alert.Heading>
-            <p>{this.state.errorMsg}</p>
-            </Alert> : <p className="alert"></p>}
-        </form>
-       
-      </>
-    );
-  }
-}
+  handleAPI = () => {
+    this.handleWeather();
+    this.handleMovie();
+  };
+
+  handleMovie = async () => {
+    try{  
+      let movieURL = `${process.env.REACT_APP_SERVER}/movie?search=${this.state.searchCity}`;
+      
+      let movieData = await axios.get(movieURL);
+      console.log(movieData);
+      this.setState({
+        movieData: movieData.data
+      });
+    } catch(error) {
+      this.setState({
+        errorMessage: error.message,
+        isError: true
+      });
+    };
+  };
+
+  handleCityInput = (e) => {
+    console.log(this.state.searchCity);
+    this.setState ({
+      searchCity: e.target.value
+    });
+  };
+
+render() {
+  console.log(this.state.weatherData);
+  return (
+  <>
+    <Form onSubmit={this.handleSubmit}>
+      <Form.Label htmlFor="cityInput">
+        <Form.Control id="cityInput" placeholder="Enter City" size="sm" onChange={this.handleCityInput}/>
+      </Form.Label>
+      <Button className='exploreButton' type="submit" variant="primary">Explore!</Button>
+    </Form>
+    <Location
+      isError={this.state.isError}
+      errorMessage={this.state.errorMessage}
+      display_name={this.state.display_name}
+      latitude={this.state.lat}
+      longitude={this.state.lon}/>
+    <Map
+      city_name={this.state.display_name}
+      lat={this.state.lat}
+      lon={this.state.lon}
+      zoom={this.state.zoom}/>
+    { this.state.weatherData && <Weather
+      weather={this.state.weatherData}
+      city={this.state.searchCity}/>}
+      {this.state.movieData && <Movie 
+      movies={this.state.movieData}
+      city={this.state.searchCity}/>}
+  </>
+  );
+};
+};
 
 export default App;
