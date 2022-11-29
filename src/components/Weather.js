@@ -1,20 +1,27 @@
 import React from 'react';
+import WeatherDay from './WeatherDay.js';
 
 class Weather extends React.Component {
+
   render() {
     return(
-      <>
-        <h3>3 Day Weather Forecast:</h3>
-
-        {this.props.weatherForecasts.map((day, idx) => 
-          <div key={`movie-${idx}`}>
-          <p>date: {day.date}</p>
-          <p>description: {day.description}</p>
-          </div>
-        )}
-      </>
-    )
-  }
-}
+      <div id="Forecast">
+        <section>
+          <h2>3 Day Forecast for {this.props.city}</h2>
+            <div id='weather'>
+              {this.props.weather.map((day, idx) => (
+              <WeatherDay
+                date={day.date}
+                fullDescription={day.fullDescription}
+                idx={idx}
+                key={idx}/>
+                ))
+              }
+            </div>
+        </section>
+      </div>
+    );
+  };
+};
 
 export default Weather;
